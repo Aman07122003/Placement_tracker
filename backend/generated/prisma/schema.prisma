@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApplicationStatus {
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+  ACCEPTED
+  CLOSED
+}
+
+enum EmailReplyStatus {
+  NO_REPLY
+  REPLIED
+}
+
+enum ActivityType {
+  COMPANY_ADDED
+  EMPLOYEE_ADDED
+  APPLICATION_SUBMITTED
+  EMAIL_SENT
+  INTERVIEW_SCHEDULED
+  OFFER_RECEIVED
+  NOTE_ADDED
+  STATUS_CHANGED
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  companies    Company[]
+  employees    Employee[]
+  applications Application[]
+  emails       Email[]
+  activities   Activity[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Company {
+  id           String        @id @default(uuid())
+  name         String
+  description  String?
+  website      String?
+  industry     String?
+  employees    Employee[]
+  applications Application[]
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([userId])
+}
+
+model Employee {
+  id           String       @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String       @unique
+  phone        String?
+  position     String
+  company      Company      @relation(fields: [companyId], references: [id])
+  companyId    String
+  profilePhoto String?
+  emails       Email[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  user         User         @relation(fields: [userId], references: [id])
+  userId       String
+  SocialLink   SocialLink[]
+
+  @@index([companyId])
+}
+
+model SocialLink {
+  id         String   @id @default(uuid())
+  type       String // "LinkedIn", "Instagram", etc.
+  url        String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId String
+
+  @@index([employeeId])
+}
+
+model Application {
+  id             String            @id @default(uuid())
+  role           String
+  status         ApplicationStatus @default(APPLIED)
+  appliedDate    DateTime
+  source         String?
+  responseStatus String?
+  interviews     Json?
+  notes          String?
+  company        Company           @relation(fields: [companyId], references: [id])
+  companyId      String
+  emails         Email[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  user           User              @relation(fields: [userId], references: [id])
+  userId         String
+
+  @@index([companyId])
+  @@index([status])
+}
+
+model Email {
+  id            String           @id @default(uuid())
+  subject       String
+  content       String
+  sentDate      DateTime         @default(now())
+  replyStatus   EmailReplyStatus @default(NO_REPLY)
+  employee      Employee         @relation(fields: [employeeId], references: [id])
+  employeeId    String
+  application   Application?     @relation(fields: [applicationId], references: [id])
+  applicationId String?
+  attachments   Json?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  user          User             @relation(fields: [userId], references: [id])
+  userId        String
+
+  @@index([employeeId])
+  @@index([applicationId])
+}
+
+model Activity {
+  id          String       @id @default(uuid())
+  type        ActivityType
+  description String
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime     @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
