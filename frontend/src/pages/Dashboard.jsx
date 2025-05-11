@@ -196,12 +196,9 @@ export default function Dashboard() {
       {/* Progress Chart */}
       <motion.div variants={itemVariants} className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-100/20 dark:border-gray-700/30">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Application Progress</h2>
+          <h2 className="md:text-2xl font-bold text-gray-800 dark:text-white">Application Progress</h2>
           <div className="flex gap-2">
-            <span className="px-3 py-1 bg-blue-100/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded-full text-sm backdrop-blur-sm">
-              Monthly Trend
-            </span>
-            <span className="px-3 py-1 bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-300 rounded-full text-sm backdrop-blur-sm">
+            <span className="px-3 py-1 text-[12px] md:text-sm bg-green-100/50 dark:bg-green-900/30 text-green-600 dark:text-green-300 rounded-full backdrop-blur-sm">
               +24% MoM
             </span>
           </div>
@@ -238,14 +235,7 @@ export default function Dashboard() {
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
         <div className="lg:col-span-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-gray-100/20 dark:border-gray-700/30">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Recent Applications</h2>
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
-            >
-              <PlusIcon className="w-5 h-5" />
-              <span>New Application</span>
-            </motion.button>
+            <h2 className="md:text-2xl text-lg font-bold text-gray-800 dark:text-white">Recent Applications</h2>
           </div>
           <RecentApplications />
         </div>
